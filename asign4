@@ -1,0 +1,106 @@
+#include<iostream>
+using namespace std;
+
+class node {
+public:
+    int data;
+    node *right, *left;
+
+    node(int data) {
+        this->data = data;
+        this->right = nullptr;
+        this->left = nullptr;
+    }
+};
+
+class tree {
+    node *root;
+
+public:
+    tree() {
+        this->root = nullptr;
+    }
+
+    void insert() {
+        int num;
+        cout << "Enter the number you want to insert: ";
+        cin >> num;
+        node *n = new node(num);
+        
+        if (root == nullptr) {
+            root = n;
+            return;
+        }
+
+        node *temp = root;
+        bool choice;
+        while (true) {
+            cout << "Enter 1 for right insertion and 0 for left insertion: ";
+            cin >> choice;
+
+            if (choice) {
+                if (temp->right == nullptr) {
+                    temp->right = n;
+                    break;
+                }
+                else {
+                    temp = temp->right;
+                }
+            }
+            else {
+                if (temp->left == nullptr) {
+                    temp->left = n;
+                    break;
+                }
+                else {
+                    temp = temp->left;
+                }
+            }
+        }
+    }
+
+    void display(node *root) {
+        if (root != nullptr) {
+            display(root->left);  // Left subtree
+            cout << root->data << " ";  // Visit node
+            display(root->right);  // Right subtree
+        }
+    }
+
+    // Function to call display from the root
+    void display() {
+        display(root);
+    }
+};
+
+int main() {
+    tree t;
+    int choice;
+
+    while (true) {
+        cout << "\nMenu:\n";
+        cout << "1. Insert a number\n";
+        cout << "2. Display the tree\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                t.insert();
+                break;
+            case 2:
+                cout << "Tree contents (in-order traversal): ";
+                t.display();
+                cout << endl;
+                break;
+            case 3:
+                cout << "Exiting..." << endl;
+                return 0;
+            default:
+                cout << "Invalid choice, please try again.\n";
+        }
+    }
+
+    return 0;
+}
