@@ -1,0 +1,164 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+    
+    Node(int data) {
+        this->data = data;
+        left = right = nullptr;
+    }
+};
+
+class BinaryTree {
+private:
+    Node* root;
+
+    // Helper function for in-order traversal
+    void inorder(Node* root) {
+        if (root != nullptr) {
+            inorder(root->left);
+            cout << root->data << " ";
+            inorder(root->right);
+        }
+    }
+
+    // Helper function for pre-order traversal
+    void preorder(Node* root) {
+        if (root != nullptr) {
+            cout << root->data << " ";
+            preorder(root->left);
+            preorder(root->right);
+        }
+    }
+
+    // Helper function for post-order traversal
+    void postorder(Node* root) {
+        if (root != nullptr) {
+            postorder(root->left);
+            postorder(root->right);
+            cout << root->data << " ";
+        }
+    }
+
+    // Helper function for level-order traversal
+    void levelOrder(Node* root) {
+        if (root == nullptr) return;
+        queue<Node*> q;
+        q.push(root);
+        while (!q.empty()) {
+            Node* temp = q.front();
+            cout << temp->data << " ";
+            q.pop();
+            if (temp->left) q.push(temp->left);
+            if (temp->right) q.push(temp->right);
+        }
+    }
+
+    // Helper function to calculate the height of the tree
+    int height(Node* root) {
+        if (root == nullptr) {
+            return -1;  // Empty tree has height -1
+        }
+        int leftHeight = height(root->left);
+        int rightHeight = height(root->right);
+        return max(leftHeight, rightHeight) + 1;
+    }
+
+public:
+    BinaryTree() {
+        root = nullptr;
+    }
+
+    // Function to insert a node in level-order
+    void insertLevelOrder(int data) {
+        Node* newNode = new Node(data);
+        if (root == nullptr) {
+            root = newNode;
+            return;
+        }
+
+        queue<Node*> q;
+        q.push(root);
+
+        while (!q.empty()) {
+            Node* temp = q.front();
+            q.pop();
+
+            // Insert in the left child
+            if (temp->left == nullptr) {
+                temp->left = newNode;
+                return;
+            } else {
+                q.push(temp->left);
+            }
+
+            // Insert in the right child
+            if (temp->right == nullptr) {
+                temp->right = newNode;
+                return;
+            } else {
+                q.push(temp->right);
+            }
+        }
+    }
+
+    // Public functions to call the traversal methods
+    void inorder() {
+        inorder(root);
+        cout << endl;
+    }
+
+    void preorder() {
+        preorder(root);
+        cout << endl;
+    }
+
+    void postorder() {
+        postorder(root);
+        cout << endl;
+    }
+
+    void levelOrder() {
+        levelOrder(root);
+        cout << endl;
+    }
+
+    // Public method to calculate the height of the tree
+    int height() {
+        return height(root);
+    }
+};
+
+int main() {
+    BinaryTree bt;
+
+    // Insert nodes into the Binary Tree using level-order insertion
+    bt.insertLevelOrder(1);
+    bt.insertLevelOrder(2);
+    bt.insertLevelOrder(3);
+    bt.insertLevelOrder(4);
+    bt.insertLevelOrder(5);
+    bt.insertLevelOrder(6);
+    bt.insertLevelOrder(7);
+
+    cout << "Inorder traversal: ";
+    bt.inorder();
+
+    cout << "Preorder traversal: ";
+    bt.preorder();
+
+    cout << "Postorder traversal: ";
+    bt.postorder();
+
+    cout << "Level-order traversal: ";
+    bt.levelOrder();
+
+    cout << "Height of the tree: " << bt.height() << endl;
+
+    return 0;
+}
