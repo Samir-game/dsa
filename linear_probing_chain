@@ -1,0 +1,96 @@
+#include <iostream>
+using namespace std;
+
+void insert(int hash[][2],int key){
+    int loc=key%10;
+    
+    if(hash[loc][0]==-1){
+        hash[loc][0]=key;
+        return;
+    } 
+
+    else if(hash[loc][0]!=-1 && hash[loc][1]==-1){
+        int x=loc;
+        int count=0;
+
+        while(hash[loc][0]!=-1 && count<10){
+            loc=(loc+1)%10;
+            count++;
+        }
+
+        if(hash[loc][0]==-1) { 
+            hash[loc][0]=key;
+            hash[x][1]=loc;
+        }
+    } 
+    
+    else if(hash[loc][0]!=-1 && hash[loc][1]!=-1){ 
+        while(hash[loc][1]!=-1){
+            loc=hash[loc][1];
+        }
+
+        int y=loc;
+        int count = 0;
+
+        
+        while(hash[loc][0]!=-1 && count<10){
+            loc=(loc+1)%10;
+            count++;
+        }
+
+        if(hash[loc][0]==-1){ 
+            hash[loc][0]=key;
+            hash[y][1]=loc;
+        }
+    } 
+    
+    else if(hash[loc][0]%10!=loc){
+        int count = 0;
+
+        while(hash[loc][0]!=-1 && count<10){
+            loc=(loc+1)%10;
+            count++;
+        }
+
+        if(hash[loc][0]==-1){
+            hash[loc][0]=key;
+        }
+    }
+}
+
+
+void display(int hash[][2]){
+    for (int i=0;i<10;i++) {
+        cout<<i<<"   "<<hash[i][0]<<"     "<<hash[i][1]<<endl;
+    }
+    
+}
+
+int main(){
+    int hash[10][2];
+    for (int i=0;i<10;i++) {
+        for (int j=0;j<2;j++){
+            hash[i][j]=-1;
+        }
+         
+    }
+
+    int i;
+    while(true) {
+        cout << "Menu:\n1.Insert \n2.Display\n";
+        cin >> i;
+
+        if(i==1) {
+            int num;
+            cout<<"enter num: ";
+            cin>>num;
+            insert(hash,num);          
+        }
+        
+        if(i==2) {
+            display(hash);
+        } 
+    }
+
+    return 0;
+}
