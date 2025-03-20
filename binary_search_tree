@@ -1,0 +1,193 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+    Node(int d) {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+
+ 
+Node* createBST() {
+    cout << "Enter Root Value: ";
+    int val;
+    cin >> val;
+    Node* root = new Node(val);
+
+    while (true) {
+        int x;
+        cout << "value inserted BST(-1): ";
+        cin >> x;
+        if (x == -1) break;
+        Node* node = root;
+        while (true) {
+            if (x == node->data) {
+                break;
+            }
+            if (x < node->data) {
+                if (node->left == NULL) {
+                    node->left = new Node(x);
+                    break;
+                } else {
+                    node = node->left;
+                }
+            } else {
+                if (node->right == NULL) {
+                    node->right = new Node(x);
+                    break;
+                } else {
+                    node = node->right;
+                }
+            }
+        }
+    }
+    return root;
+}
+
+
+
+bool searchBST(Node* root, int key) {
+    Node* temp = root;
+    while (temp != NULL) {
+        if (key == temp->data) { return true; }
+        if (key < temp->data) {
+            temp = temp->left;
+        }
+        else {
+            temp = temp->right;
+        }
+    }
+    return false;
+}
+
+
+Node* deleteBST(Node* root, int x) {
+    if (root == nullptr)
+        return root;
+
+    if (root->data > x) {
+        root->left = deleteBST(root->left, x);
+    }
+
+    else if (root->data < x) {
+        root->right = deleteBST(root->right, x);
+    }
+    else {
+        if (root->left == nullptr) {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        }
+        else if (root->right == nullptr) {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+        else {
+            Node* succ = root->right;
+            while (succ && succ->left) {
+                succ = succ->left;
+            }
+            root->data = succ->data;
+            root->right = deleteBST(root->right, succ->data);
+        }
+    }
+    return root;
+}
+
+
+Node* buildtree(vector<int>& inor, vector<int>& preor, int& preindex, int left, int right) {
+    if (left > right){
+        return nullptr;
+    }
+
+    int rootvalue = preor[preindex];
+    preindex++;
+    
+   
+    Node* newnode = new Node(rootvalue);
+
+
+    int index = -1;
+    for (int i = left; i <= right; ++i) {
+        if (inor[i] == rootvalue) {
+            index = i;
+            break;
+        }
+    }
+
+    newnode->left = buildtree(inor, preor, preindex, left, index - 1);
+    newnode->right = buildtree(inor, preor, preindex, index + 1, right);
+
+    return newnode;
+}
+
+
+Node* createFromINandPRE(vector<int>& inor, vector<int>& preor) {
+    int preindex = 0;
+    Node* ans = buildtree(inor, preor, preindex, 0, preor.size() - 1);
+    return ans;
+}
+
+
+
+void inorder(Node* root) {
+    if (root == NULL) return;
+    inorder(root->left);
+    cout << root->data << " ";
+    inorder(root->right);
+}
+
+
+
+int main() {
+    
+    Node* root = createBST();
+
+    cout << "Inorder BST: ";
+    inorder(root);
+    cout << endl;
+
+    int searchVal;
+    cout << "value to search: ";
+    cin >> searchVal;
+    if (searchBST(root, searchVal)) {
+        cout << searchVal << " found" << endl;
+    } else {
+        cout << searchVal << " not found" << endl;
+    }
+
+    while(true){
+        int choice;
+        cout<<"delection: ";
+        cin>>choice;
+        if(choice==-1){
+            break;
+        }
+        int deleteVal;
+        cout << "delete value:";
+        cin >> deleteVal;
+        root = deleteBST(root, deleteVal);
+        cout << "after deletion: ";
+        inorder(root);
+        cout << endl;
+    }
+    
+
+    
+    vector<int> invalue = {4, 2, 5, 1, 6, 3};
+    vector<int> preValue = {1, 2, 4, 5, 3, 6};
+    Node* bst = createFromINandPRE(invalue, preValue);
+    
+    cout << "bst by Preorder and Inorder: ";
+    inorder(bst);
+    cout << endl;
+
+    return 0;
+}
